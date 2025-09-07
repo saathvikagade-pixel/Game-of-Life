@@ -16,13 +16,15 @@ pygame.display.set_caption("Game of Life")
 
 clock = pygame.time.Clock() # Tracks how much time has passed
 simulation = Simulation(WINDOW_WIDTH, WINDOW_HEIGHT, CELL_SIZE)
+
+
+'''
 simulation.grid.cells[5][29] = 1
 simulation.grid.cells[6][0] = 1
 simulation.grid.cells[5][0] = 1
 simulation.grid.cells[4][0] = 1
-
 print(simulation.count_live_neighbours(simulation.grid, 5, 29))
-
+'''
 
 '''
 grid = Grid(WINDOW_WIDTH, WINDOW_HEIGHT, CELL_SIZE)
@@ -45,8 +47,21 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                simulation.start()
+                pygame.display.set_caption("Game of Life is running")
+            elif event.key == pygame.K_SPACE:
+                simulation.stop()
+                pygame.display.set_caption("Game of Life has stopped")
+            elif event.key == pygame.K_f:
+                FPS += 2
+            elif event.key == pygame.K_s:
+                if FPS > 5:
+                    FPS -= 2
 
     # 2. Updating State
+    simulation.update()
 
     # 3. Drawing Objects
 

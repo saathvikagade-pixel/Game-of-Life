@@ -1,4 +1,5 @@
 import pygame
+import random
 
 class Grid:
     def __init__(self, width, height, cell_size):
@@ -12,3 +13,8 @@ class Grid:
             for column in range(self.columns):
                 colour = (0, 255, 0) if self.cells[row][column] else (55, 55, 55)
                 pygame.draw.rect(window, colour, (column * self.cell_size, row * self.cell_size, self.cell_size - 1, self.cell_size - 1)) # rect values consists of 4 values: x, y, width and height
+
+    def fill_random(self):
+        for row in range(self.rows):
+            for column in range(self.columns):
+                self.cells[row][column] = random.choice([1, 0, 0, 0]) # 25% of cell being alive
