@@ -25,42 +25,32 @@ class Simulation:
 
         Takes as arguments the grid, row number and column number. Returns the number of live neighbours
         """
-        live_neighbours = 0
-
-        neighbour_offsets = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-        for offset in neighbour_offsets:
-            new_row = (row + offset[0]) % self.rows
-            new_column = (column + offset[1]) % self.columns
-            if self.grid.cells[new_row][new_column] == 1:
-                live_neighbours += 1
-
-        return live_neighbours
+        cells = grid.cells
+        rows, cols = self.rows, self.columns
+        cnt = 0
+        for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+            cnt += 1 if cells[(row+dr)%rows][(column+dc)%cols] == 1 else 0
+        return cnt
     
     def update(self):
         """
-        Update the grid as it is running by using a temporary grid and then copying to the original
+        Update the grid as it is running by using a temporary grid and then swapping it with the original
         grid
         """
-        if self.is_running():
-            for row in range(self.rows):
-                for column in range(self.columns):
-                    live_neighbours = self.count_live_neighbours(self.grid, row, column)
-                    cell_value = self.grid.cells[row][column]
+        if not self.is_running():
+            return
 
-                    if cell_value == 1:
-                        if live_neighbours > 3 or live_neighbours < 2:
-                            self.temp_grid.cells[row][column] = 0
-                        else:
-                            self.temp_grid.cells[row][column] = 1
-                    else:
-                        if live_neighbours == 3:
-                            self.temp_grid.cells[row][column] = 1
-                        else:
-                            self.temp_grid.cells[row][column] = 0
+        cells = self.grid.cells
+        temp  = self.temp_grid.cells
+        rows, cols = self.rows, self.columns
 
-            for row in range(self.rows):
-                for column in range(self.columns):
-                    self.grid.cells[row][column] = self.temp_grid.cells[row][column]
+        for row in range(rows):
+            for column in range(cols):
+                ln = self.count_live_neighbours(self.grid, row, column)
+                value = cells[row][column]
+                temp[row][column] = 1 if (value == 1 and 2 <= ln <= 3) or (value == 0 and ln == 3) else 0
+
+        self.grid, self.temp_grid = self.temp_grid, self.grid
 
     def is_running(self):
         """
