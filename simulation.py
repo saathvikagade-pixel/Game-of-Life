@@ -50,7 +50,7 @@ class Simulation:
                 value = cells[row][column]
                 temp[row][column] = 1 if (value == 1 and 2 <= ln <= 3) or (value == 0 and ln == 3) else 0
 
-        self.grid, self.temp_grid = self.temp_grid, self.grid
+        self.grid, self.temp_grid = self.temp_grid, self.grid # Runs in O(1) time by copying instead of O(n*m) time if copying 
 
     def is_running(self):
         """
